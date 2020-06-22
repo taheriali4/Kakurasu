@@ -3,6 +3,7 @@ package kakurasu;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,9 +37,9 @@ public class gui implements Runnable{
 	}
 	@Override
 	public void run() {
-		BufferedReader in;
-		PrintWriter out;
-		BufferedOutputStream dataOut;
+		BufferedReader in = null;
+ 		PrintWriter out = null;
+		BufferedOutputStream dataOut = null;
 		String fileRequested;
 		
 		try {
@@ -66,15 +67,73 @@ public class gui implements Runnable{
 				
 				File file = new File(WEB_ROOT, fileRequested);
 				int fileLength = (int) file.length();
-				//String content = getContentType(fileRequested);
+				String content = getContentType(fileRequested);
+				
+				if(m.equals("GET")){
+					byte[] fileData = readFileData(file, fileLength);
+					
+					out.println("HTTP/1.1 200 OK");
+					out.println("Server: Java HTTP Server from SSaurel : 1.0");
+					out.println("Date: " + new Date());
+					out.println("Content-type: " + content);
+					out.println("Content-length: " + fileLength);
+					out.println(); // blank line between headers and content, very important !
+					out.flush(); // flush character output stream buffer
+					
+					dataOut.write(fileData, 0, fileLength);
+					dataOut.flush();
+					
+				}
+
+				if (verbose) {
+					System.out.println("File " + fileRequested + " of type " + content + " returned");
+				}
 			}
 			
 		}catch(FileNotFoundException f) {
-			
+			System.err.println("FNF err");
 		}catch(IOException e) {
+			System.err.println("error: " + e.getMessage());
 			
 		}
+		finally {
+			try {
+				in.close();
+				out.close();
+				dataOut.close();
+				connect.close(); //close socket connection
+			}catch(Exception e) {
+				System.err.println("Error closing stream : " + e.getMessage());
+			} 
+			
+			if (verbose) {
+				System.out.println("Connection closed.\n");
+			}
+		}
 	}
+	
+	private byte[] readFileData(File f, int fileLength) throws IOException{
+		FileInputStream fileIn = null;
+		byte[] data = new byte[fileLength];
+		try {
+			fileIn = new FileInputStream(f);
+			fileIn.read(data);
+		}finally {
+			if(fileIn != null) {
+				fileIn.close();
+			}
+		}
+		return data;
+	}
+	
+	private String getContentType(String fileReq) {
+		if(fileReq.endsWith(".htm") || fileReq.endsWith(".html")) {
+			return "text/html";
+		}else {
+			return "text/plain";
+		}
+	}
+	
 	
 	public static void startUp() {
 		try {
