@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 
 //source:
 //https://medium.com/@ssaurel/create-a-simple-http-web-server-in-java-3fc12b29d5fd
-//want to make a local server hosted webpage to play the game since js looks way nicer than swing
+//want to make a local server hosted webpage to play the game since jt looks way nicer than swing
 public class gui implements Runnable{
 	
 	static final File WEB_ROOT = new File(".");
@@ -30,10 +30,8 @@ public class gui implements Runnable{
 	//client connection via socket
 	private Socket connect;
 
-	private Kakurasu k;
-	public gui(Kakurasu k, Socket c) {
+	public gui(Socket c) {
 		this.connect = c;
-		this.k = k;
 	}
 	@Override
 	public void run() {
@@ -57,13 +55,37 @@ public class gui implements Runnable{
 			String m = parse.nextToken().toUpperCase();
 			//get file requested
 			fileRequested = parse.nextToken().toLowerCase();
+			System.out.println(fileRequested);
 			
 			if(!m.equals("GET") && !m.equals("HEAD")){
 				System.err.println("bad method call: " + m.toString());
 			}else {
+				if(fileRequested.startsWith("/puzzle?")){
+					int size = Integer.parseInt(fileRequested.substring(fileRequested.lastIndexOf("?") + 1));
+					System.out.println("puzzle requested of size " + size);
+					Kakurasu k = new Kakurasu(size);
+					
+					int fileLength = (int) k.toString().length();
+					
+					out.println("HTTP/1.1 200 OK");
+					out.println("Server: Java HTTP Server from poogs : 1.0");
+					out.println("Date: " + new Date());	
+					out.println("content-type: puzzle");
+					out.println("Content-length" + k.toString().length());
+					out.println();
+					out.flush();
+					
+					byte[] output = k.toString().getBytes();
+					dataOut.write(output, 0, fileLength);
+					dataOut.flush();
+					
+					
+				}else {
+
 				if(fileRequested.endsWith("/")) {
 					fileRequested += DEFAULT_FILE;
 				}
+				
 				
 				File file = new File(WEB_ROOT, fileRequested);
 				int fileLength = (int) file.length();
@@ -84,9 +106,11 @@ public class gui implements Runnable{
 					dataOut.flush();
 					
 				}
-
+				
 				if (verbose) {
 					System.out.println("File " + fileRequested + " of type " + content + " returned");
+				}
+				
 				}
 			}
 			
@@ -138,9 +162,8 @@ public class gui implements Runnable{
 	public static void startUp() {
 		try {
 			ServerSocket serverConnect = new ServerSocket(PORT);	
-			Kakurasu k = new Kakurasu(4);
 			while(true) {
-				gui g = new gui(k, serverConnect.accept());
+				gui g = new gui(serverConnect.accept());
 
 				if(verbose) {
 					System.out.println("connection started " + new Date());
@@ -151,7 +174,7 @@ public class gui implements Runnable{
 
 			}
 		}catch(IOException e) {
-			System.err.println("server connection error" + e.getMessage());
+			System.err.println("server connection error " + e.getMessage());
 			
 		}
 	}
