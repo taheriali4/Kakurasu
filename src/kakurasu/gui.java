@@ -91,7 +91,7 @@ public class gui implements Runnable{
 			}
 			
 		}catch(FileNotFoundException f) {
-			System.err.println("FNF err");
+			System.err.println("FNF err: " + f.getMessage());
 		}catch(IOException e) {
 			System.err.println("error: " + e.getMessage());
 			
