@@ -90,8 +90,77 @@
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-    document.getElementById("puzzle").innerHTML = this.responseText;
+        buildPuzzle(this.responseText, size);
+        console.log(this.responseText)
     }};
     xhttp.open("GET", "puzzle?" + size, true);
     xhttp.send();
   }
+
+        
+
+function buildPuzzle(string, size) {
+        console.log("puzzle build " + size);
+    var arr = string.split(" ");
+    console.log("size: " + size + " rows,cols: " +  arr)
+    var body = document.getElementsByTagName('body')[0];
+    var tbl = document.createElement('table');
+    tbl.style.width = '100%';
+    tbl.setAttribute('border', '1');
+    var tbdy = document.createElement('tbody');
+    //generate the table
+    for (var i = 0; i <= size; i++) { //rows
+        var tr = document.createElement('tr');
+        for (var j = 0; j <= size; j++) { //columns
+
+                var td = document.createElement('td');
+            if(i == 0){
+                td.innerHTML = j
+            }else if(j == 0){
+                td.innerHTML = i
+            }
+            if(i != 0 && j != 0){
+                //td.setAttribute('onclick', 'mark()');
+                td.onclick = function(){
+                    mark(this);
+                }
+            }
+                td.appendChild(document.createTextNode('\u0020'))
+                tr.appendChild(td)
+        }
+        if(i != 0){
+            var td = document.createElement('td');
+            var index = parseInt(size) + i - 1;
+            td.innerHTML = arr[index];
+            tr.appendChild(td);
+        }
+        tbdy.appendChild(tr);
+    }
+    //this creates the 'answer bits' on the bottom
+    tr = document.createElement('tr');
+    tr.appendChild(document.createElement('td'));
+    for(var i = 0; i < size; i ++){
+        var td = document.createElement('td');
+        td.innerHTML = arr[i];
+        tr.appendChild(td);
+    }
+    tbdy.appendChild(tr);
+
+    tbl.appendChild(tbdy);
+    document.getElementById("puzzle").innerHTML = '';
+    document.getElementById("puzzle").appendChild(tbl);
+    //body.appendChild(tbl)
+}
+
+function mark(tbl){
+    console.log(tbl);
+    //tbl.innerHTML = 1;
+    console.log(tbl.innerHTML == 1);
+    if(tbl.innerHTML == 1){
+        tbl.innerHTML = 0;
+    }else if(tbl.innerHTML == 0){
+        tbl.innerHTML = ' ';
+    }else{
+        tbl.innerHTML = 1;
+    }
+}

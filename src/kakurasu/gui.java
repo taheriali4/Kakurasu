@@ -64,8 +64,10 @@ public class gui implements Runnable{
 					int size = Integer.parseInt(fileRequested.substring(fileRequested.lastIndexOf("?") + 1));
 					System.out.println("puzzle requested of size " + size);
 					Kakurasu k = new Kakurasu(size);
+
+                    String puzzle = k.getRow() + k.getCol();
 					
-					int fileLength = (int) k.toString().length();
+					int fileLength = (int) puzzle.length();
 					
 					out.println("HTTP/1.1 200 OK");
 					out.println("Server: Java HTTP Server from poogs : 1.0");
@@ -75,7 +77,7 @@ public class gui implements Runnable{
 					out.println();
 					out.flush();
 					
-					byte[] output = k.toString().getBytes();
+					byte[] output = puzzle.getBytes();
 					dataOut.write(output, 0, fileLength);
 					dataOut.flush();
 					

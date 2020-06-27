@@ -70,7 +70,7 @@ public class Kakurasu {
 		return s.toString();
 	}
 	
-	public String generatePuzzle() {
+	public String generatePuzzle() { //returns a text version
 		StringBuilder s = new StringBuilder();
 		s.append(" ");
 		for(int i = 1; i <= size; i ++) {
@@ -93,7 +93,24 @@ public class Kakurasu {
 		return s.toString();
 		
 	}
+
+    public String getCol(){
+        StringBuilder s = new StringBuilder();
+        for(int i = 0; i < size; i++){
+            s.append(col[i]);
+            s.append(" ");
+        }
+        return s.toString();
+    }
 	
+    public String getRow(){
+        StringBuilder s = new StringBuilder();
+        for(int i = 0; i < size; i++){
+            s.append(row[i]);
+            s.append(" ");
+        }
+        return s.toString();
+    }
 
 	/*
 	    public static void main(String[] args) {
