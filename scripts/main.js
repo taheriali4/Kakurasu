@@ -110,23 +110,26 @@ function buildPuzzle(string, size) {
     var tbdy = document.createElement('tbody');
     //generate the table
     for (var i = 0; i <= size; i++) { //rows
-        var tr = document.createElement('tr');
-        for (var j = 0; j <= size; j++) { //columns
-
-                var td = document.createElement('td');
-            if(i == 0){
-                td.innerHTML = j
-            }else if(j == 0){
-                td.innerHTML = i
-            }
-            if(i != 0 && j != 0){
-                //td.setAttribute('onclick', 'mark()');
-                td.onclick = function(){
-                    mark(this);
-                }
-            }
-                td.appendChild(document.createTextNode('\u0020'))
-                tr.appendChild(td)
+      var tr = document.createElement('tr');
+      for (var j = 0; j <= size; j++) { //columns
+        var td = document.createElement('td');
+          if(i == 0){
+            td.innerHTML = j
+          }else if(j == 0){
+            td.innerHTML = i
+          }
+          if(i != 0 && j != 0){
+            var btn = document.createElement('BUTTON');
+            btn.style.height= "50px";
+            btn.style.width= "100%";
+            btn.style.border= "none";
+            btn.style.backgroundColor="#FFFFFF";
+            //td.setAttribute('onclick', 'mark()');
+            btn.onclick = function(){mark(this);}
+            td.appendChild(btn);
+          }
+          td.appendChild(document.createTextNode('\u0020'))
+          tr.appendChild(td)
         }
         if(i != 0){
             var td = document.createElement('td');
@@ -152,15 +155,12 @@ function buildPuzzle(string, size) {
     //body.appendChild(tbl)
 }
 
-function mark(tbl){
-    console.log(tbl);
-    //tbl.innerHTML = 1;
-    console.log(tbl.innerHTML == 1);
-    if(tbl.innerHTML == 1){
-        tbl.innerHTML = 0;
-    }else if(tbl.innerHTML == 0){
-        tbl.innerHTML = ' ';
+function mark(btn){
+    if(btn.className != 'toggled'){
+      btn.style.backgroundColor = "#000000";
+      btn.className = 'toggled';
     }else{
-        tbl.innerHTML = 1;
+      btn.className = 'nt';
+      btn.style.backgroundColor = "#FFFFFF";
     }
 }
