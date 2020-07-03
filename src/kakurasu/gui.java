@@ -155,7 +155,9 @@ public class gui implements Runnable{
 	private String getContentType(String fileReq) {
 		if(fileReq.endsWith(".htm") || fileReq.endsWith(".html")) {
 			return "text/html";
-		}else {
+		}else if(fileReq.endsWith(".css")){
+            return "text/css";
+        }else{
 			return "text/plain";
 		}
 	}

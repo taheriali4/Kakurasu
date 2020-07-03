@@ -1,0 +1,17 @@
+
+
+td {
+    height: 0;
+
+    &:after, &:before {
+        content: '';
+
+        display: block;
+        padding-bottom: calc(50% - 0.5em);
+    }
+}
+td 
+{
+    text-align: center; 
+    vertical-align: middle;
+}

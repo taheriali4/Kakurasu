@@ -80,6 +80,11 @@
   
 })();
 
+function makePuzzle(){
+    resize(document.getElementById("size").value);
+
+}
+
   function resize(value){
     document.getElementById("test").innerHTML = "size = " + value;
     getPuzzle(value);
@@ -90,6 +95,7 @@
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
+        //return this.responseText;
         buildPuzzle(this.responseText, size);
         console.log(this.responseText)
     }};
@@ -106,7 +112,7 @@ function buildPuzzle(string, size) {
     var body = document.getElementsByTagName('body')[0];
     var tbl = document.createElement('table');
     tbl.style.width = '100%';
-    tbl.setAttribute('border', '1');
+    tbl.setAttribute('border', '0');
     var tbdy = document.createElement('tbody');
     //generate the table
     for (var i = 0; i <= size; i++) { //rows
@@ -122,7 +128,7 @@ function buildPuzzle(string, size) {
             var btn = document.createElement('BUTTON');
             btn.style.height= "50px";
             btn.style.width= "100%";
-            btn.style.border= "none";
+            btn.style.border= "1";
             btn.style.backgroundColor="#FFFFFF";
             //td.setAttribute('onclick', 'mark()');
             btn.onclick = function(){mark(this);}

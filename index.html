@@ -11,6 +11,7 @@
         h1,h2,h3
             {line-height:1.2}
     </style>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
     <title></title>
 
     <!-- Disable tap highlight on IE -->
@@ -42,7 +43,9 @@
   <body>
     <!-- Add your site or app content here -->
     <p id="test"> hello! </p>
-    <input id="size" type="number" value="4" min="1" onchange="resize(this.value)" >
+    <!-- onchange="resize(this.value)"  -->
+    <input id="size" type="number" value="4" min="1" >
+    <button id="makePuzzle" onclick="makePuzzle()"> New puzzle! </button>
     <div id="puzzle"> tester</div>
 	
 
