@@ -184,14 +184,23 @@ function buildPuzzle(string, size) {
 }
 
 function mark(btn){
-    if(btn.className != 'toggled'){
-      btn.style.backgroundColor = "#000000";
+    if(btn.className == 'nt'){
+      btn.style.backgroundColor = "#FFFFFF";
+      btn.innerHTML="";
       btn.className = 'toggled';
       btn.setAttribute("toggled", true);
-    }else{
+    }
+    else if(btn.className == 'red'){
+      btn.style.backgroundColor = "#000000";
+      btn.innerHTML="";
       btn.className = 'nt';
-      btn.style.backgroundColor = "#FFFFFF";
-      btn.setAttribute("toggled", false);
+      btn.setAttribute("toggled", true);
+    }else{ 
+      btn.className = 'red';
+      btn.style.color="#FF0000";
+      btn.innerHTML="X";
+      btn.style.backgroundColor = "#000000";
+      btn.setAttribute("toggled", true);
     }
 }
 
@@ -207,7 +216,7 @@ function answer(string){
                     alert("Incorrect!");
                     return false;
                 }
-                if(string.charAt(counter) == 0 && ele.className != 'nt'){
+                if(string.charAt(counter) == 0 && (ele.className != 'nt'|| ele.className != 'red')){
                     alert("Incorrect!");
                     return false;
                 }
