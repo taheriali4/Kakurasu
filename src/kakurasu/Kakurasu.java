@@ -12,7 +12,7 @@ public class Kakurasu {
 	private int [] col;
 	//values that go on the row as sums
 	private int [] row;
-	
+
 	public Kakurasu(int size) {
 		this.size = size;
 		solution = new boolean[size][size];
@@ -112,6 +112,16 @@ public class Kakurasu {
         return s.toString();
     }
 
+    public String getAns(){
+        StringBuilder s = new StringBuilder();
+        for(boolean[] i : solution){
+            for(boolean j : i){
+                if(j){ s.append(1);}
+                else{s.append(0);}
+            }
+        }
+        return s.toString();
+    }
 	/*
 	    public static void main(String[] args) {
 		Kakurasu k = new Kakurasu(4);

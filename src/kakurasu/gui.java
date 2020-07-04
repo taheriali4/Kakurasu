@@ -30,6 +30,8 @@ public class gui implements Runnable{
 	//client connection via socket
 	private Socket connect;
 
+    private Kakurasu k;
+
 	public gui(Socket c) {
 		this.connect = c;
 	}
@@ -63,7 +65,7 @@ public class gui implements Runnable{
 				if(fileRequested.startsWith("/puzzle?")){
 					int size = Integer.parseInt(fileRequested.substring(fileRequested.lastIndexOf("?") + 1));
 					System.out.println("puzzle requested of size " + size);
-					Kakurasu k = new Kakurasu(size);
+					k = new Kakurasu(size);
 
                     String puzzle = k.getRow() + k.getCol();
 					
@@ -73,7 +75,7 @@ public class gui implements Runnable{
 					out.println("Server: Java HTTP Server from poogs : 1.0");
 					out.println("Date: " + new Date());	
 					out.println("content-type: puzzle");
-					out.println("Content-length" + k.toString().length());
+					out.println("Content-length" + puzzle.length());
 					out.println();
 					out.flush();
 					
@@ -82,6 +84,26 @@ public class gui implements Runnable{
 					dataOut.flush();
 					
 					
+				}else if(fileRequested.startsWith("/answer")){
+                    System.out.println("answer requested");
+
+                    String ans = k.getAns();
+
+                    int fileLength = (int) ans.length();
+
+					out.println("HTTP/1.1 200 OK");
+					out.println("Server: Java HTTP Server from poogs : 1.0");
+					out.println("Date: " + new Date());	
+					out.println("content-type: answer");
+					out.println("Content-length" + ans.length());
+                    out.println();
+                    out.flush();
+
+                    byte[] output = ans.getBytes();
+                    dataOut.write(output, 0, fileLength);
+                    dataOut.flush();
+
+
 				}else {
 
 				if(fileRequested.endsWith("/")) {

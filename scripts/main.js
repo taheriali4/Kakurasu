@@ -90,6 +90,17 @@ function makePuzzle(){
     getPuzzle(value);
   }
 
+  function getAns(){
+      var xhhtp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function(){
+          if (this.readyState == 4 && this.status == 200) {
+              return this.responseText;
+      }};
+      xhttp.open("GET", "answer", true);
+      xhttp.send();
+
+
+  }
 
   function getPuzzle(size){
     var xhttp = new XMLHttpRequest();
@@ -126,6 +137,10 @@ function buildPuzzle(string, size) {
           }
           if(i != 0 && j != 0){
             var btn = document.createElement('BUTTON');
+
+            btn.setAttribute("row", i);
+            btn.setAttribute("col", j);
+
             btn.style.height= "50px";
             btn.style.width= "100%";
             btn.style.border= "1";
@@ -156,8 +171,14 @@ function buildPuzzle(string, size) {
     tbdy.appendChild(tr);
 
     tbl.appendChild(tbdy);
-    document.getElementById("puzzle").innerHTML = '';
+    document.getElementById("puzzle").innerHTML = '';//this will clear the old puzzle if it exists
     document.getElementById("puzzle").appendChild(tbl);
+    var ans = document.createElement('BUTTON');//this is the answers butto
+    ans.innerHTML = "check puzzle";
+    ans.onclick = function(){answer();}
+    document.getElementById("answer").innerHTML = '';
+    document.getElementById("answer").appendChild(ans); 
+
     //body.appendChild(tbl)
 }
 
@@ -165,8 +186,23 @@ function mark(btn){
     if(btn.className != 'toggled'){
       btn.style.backgroundColor = "#000000";
       btn.className = 'toggled';
+      btn.setAttribute("toggled", true);
     }else{
       btn.className = 'nt';
       btn.style.backgroundColor = "#FFFFFF";
+      btn.setAttribute("toggled", false);
     }
+}
+
+function answer(){
+    console.log("poggers");
+    var answer = getAns();
+    var tbl = document.getElementByID("puzzle");
+    for(i = 1; i < tbl.rows.length - 1; i++){ //rows (from 1 to n-1 since there are labels there
+        var colCells = tbl.rows.item(i).cells;
+        for(j = 1; j < colCells.length - 1; j++){
+            
+        }
+    }
+
 }
