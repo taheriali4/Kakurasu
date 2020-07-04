@@ -91,10 +91,10 @@ function makePuzzle(){
   }
 
   function getAns(){
-      var xhhtp = new XMLHttpRequest();
+      var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function(){
           if (this.readyState == 4 && this.status == 200) {
-              return this.responseText;
+              answer(this.responseText);
       }};
       xhttp.open("GET", "answer", true);
       xhttp.send();
@@ -140,6 +140,7 @@ function buildPuzzle(string, size) {
 
             btn.setAttribute("row", i);
             btn.setAttribute("col", j);
+            btn.className = 'nt';
 
             btn.style.height= "50px";
             btn.style.width= "100%";
@@ -175,7 +176,7 @@ function buildPuzzle(string, size) {
     document.getElementById("puzzle").appendChild(tbl);
     var ans = document.createElement('BUTTON');//this is the answers butto
     ans.innerHTML = "check puzzle";
-    ans.onclick = function(){answer();}
+    ans.onclick = function(){getAns();} //have to do this order since async - could probably also promise
     document.getElementById("answer").innerHTML = '';
     document.getElementById("answer").appendChild(ans); 
 
@@ -194,15 +195,28 @@ function mark(btn){
     }
 }
 
-function answer(){
-    console.log("poggers");
-    var answer = getAns();
-    var tbl = document.getElementByID("puzzle");
-    for(i = 1; i < tbl.rows.length - 1; i++){ //rows (from 1 to n-1 since there are labels there
-        var colCells = tbl.rows.item(i).cells;
-        for(j = 1; j < colCells.length - 1; j++){
-            
+function answer(string){
+    console.log(string);
+    var tbl = document.getElementById("puzzle").children[0];
+    var counter = 0;
+    for(var i = 1, row; row = tbl.rows[i]; i++){ //rows (from 1 to n-1 since there are labels there
+        for(var j = 1, col; col = row.cells[j]; j++){
+            if(col.firstElementChild != null){
+                ele = col.firstElementChild;
+                if(string.charAt(counter) == 1 && ele.className != 'toggled') {
+                    alert("Incorrect!");
+                    return false;
+                }
+                if(string.charAt(counter) == 0 && ele.className != 'nt'){
+                    alert("Incorrect!");
+                    return false;
+                }
+                counter++;
+            }
         }
     }
-
+    if(confirm("Correct! \nWould you like to play again?") == true){
+        makePuzzle();   
+    }
+    return true;
 }

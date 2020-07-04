@@ -30,7 +30,7 @@ public class gui implements Runnable{
 	//client connection via socket
 	private Socket connect;
 
-    private Kakurasu k;
+    private static Kakurasu k;
 
 	public gui(Socket c) {
 		this.connect = c;
