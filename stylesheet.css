@@ -15,3 +15,12 @@ td
     text-align: center; 
     vertical-align: middle;
 }
+table
+{
+    table-layout:fixed;
+
+}
+
+button
+{
+}
