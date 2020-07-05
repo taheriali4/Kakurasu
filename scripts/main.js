@@ -185,21 +185,23 @@ function buildPuzzle(string, size) {
 
 function mark(btn){
     if(btn.className == 'nt'){
-      btn.style.backgroundColor = "#FFFFFF";
+      btn.style.color="#FFFFFF";//red
+      btn.style.backgroundColor = "#000000";//black
       btn.innerHTML="";
       btn.className = 'toggled';
       btn.setAttribute("toggled", true);
     }
     else if(btn.className == 'red'){
-      btn.style.backgroundColor = "#000000";
+      btn.style.color="#FFFFFF";//red
+      btn.style.backgroundColor = "#FFFFFF";//white
       btn.innerHTML="";
       btn.className = 'nt';
       btn.setAttribute("toggled", true);
     }else{ 
       btn.className = 'red';
-      btn.style.color="#FF0000";
+      btn.style.color="#FF0000";//red
       btn.innerHTML="X";
-      btn.style.backgroundColor = "#000000";
+      btn.style.backgroundColor = "#FFFFFF";//white
       btn.setAttribute("toggled", true);
     }
 }
@@ -212,14 +214,20 @@ function answer(string){
         for(var j = 1, col; col = row.cells[j]; j++){
             if(col.firstElementChild != null){
                 ele = col.firstElementChild;
+                console.log(string.charAt(counter));
+                console.log(ele.className);
+                console.log("--------");
                 if(string.charAt(counter) == 1 && ele.className != 'toggled') {
-                    alert("Incorrect!");
+                    alert("Incorrect!1");
                     return false;
                 }
-                if(string.charAt(counter) == 0 && (ele.className != 'nt'|| ele.className != 'red')){
-                    alert("Incorrect!");
-                    return false;
+                if(string.charAt(counter) == 0 ){
+                    if(ele.className == 'toggled' ){
+                        alert("Incorrect!3");
+                        return false;
+                    }
                 }
+
                 counter++;
             }
         }
