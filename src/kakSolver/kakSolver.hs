@@ -1,3 +1,5 @@
+import Data.List
+
 type Grid = Matrix Value
 type Matrix a = [Row a]
 type Row a = [a]
@@ -17,9 +19,9 @@ valid :: Question -> Grid-> Bool
 valid (q1, q2) g = (sumcheck (rows g) q1) && (sumcheck (cols g) q2)
 
 
-transpose :: Matrix a -> [Row a]
-transpose ([]:_) = []
-transpose x = (map head x) : transpose (map tail x)
+--transpose :: Matrix a -> [Row a]
+--transpose ([]:_) = []
+--transpose x = (map head x) : transpose (map tail x)
 
 
 rows :: Matrix a -> [Row a]
@@ -58,8 +60,36 @@ collapse = sequence . map sequence
 solveBrute :: Question -> [Grid]
 solveBrute question= filter (valid  question) (collapse (choices (length (fst question))))
 --solveBrute question = filter valid . question collapse . choices . length . fst . question
+--filter (verify) (possibilities)
 
 
+--now we want to prune the search tree a little
+prune :: Matrix Choices -> Matrix Choices
+prune = pruneBy rows . pruneBy cols
+        where pruneBy f = f . map reduce . f
 
+reduce :: Row Choices -> Row Choices 
+reduce xss = [xs `minus` singles | xs <- xss]
+        where singles = concat (filter single xss)
 
+minus :: Choices -> Choices -> Choices
+xs `minus` ys = if single xs then xs else xs \\ ys
 
+single :: [a] -> Bool
+single [_] = True
+single _ = False
+
+fix :: Eq a =>  (a -> a) -> a -> a
+fix f x = if x == x' then x else fix f x'
+    where x' = f x
+
+solveFixPrune :: Question -> [Grid]
+solveFixPrune q= filter (valid q) (collapse (fix prune (choices (length (fst q)))))
+
+--turns out that its not that good
+--lets keep optimizing
+
+solve :: Question -> [Grid]
+solve = search prune choices . length . fst 
+
+search :: Matrix Choices -> [Grid]
