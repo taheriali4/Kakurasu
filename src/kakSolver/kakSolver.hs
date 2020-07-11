@@ -3,20 +3,15 @@ type Matrix a = [Row a]
 type Row a = [a]
 type Value = Bool
 
-type Question = ([Int], [Int])
+type Question = ([Int], [Int]) --column then row?
 
 values :: [Value]
 values = [True, False]
 
-puzzle :: Grid
-puzzle = [[True,False],
-          [False,True]]
+--puzzle :: Grid
+--puzzle = [[True,False],
+         -- [False,True]]
 
-empty :: Value -> Bool
-empty _ = True
-
-question :: Question 
-question = ([1,2], [1,2])
 
 valid :: Question -> Grid-> Bool
 valid (q1, q2) g = (sumcheck (rows g) q1) && (sumcheck (cols g) q2)
@@ -44,19 +39,25 @@ sumcheck (r:rs) (a:as) = (fst(foldl (\(num, count) x -> if x then (num + count, 
 --treat a list as a nondet set of values
 type Choices = [Value]
 
-choices :: Grid -> Matrix Choices
-choices g = map (map choice) g
-    where 
-        choice v = if empty v then values else [v]
+--not big enough
+--choices :: Grid -> Matrix Choices
+--choices g = map (map choice) g
+--    where 
+--        choice v = if empty v then values else [v]
+
+choices :: Int -> Matrix Choices
+choices n = replicate n (replicate n [True, False])
 
 -- makes each row a list of all possibilites
 -- then makes each list of rows a list of each possibility
 collapse :: Matrix [a] -> [Matrix a]
 collapse = sequence . map sequence
+--(map sequence lst) makes the combination, then the seq combo makes each possibilty ty cameron
 
 
-solveBrute :: Grid -> [Grid]
-solveBrute = filter (valid  question) . collapse . choices
+solveBrute :: Question -> [Grid]
+solveBrute question= filter (valid  question) (collapse (choices (length (fst question))))
+--solveBrute question = filter valid . question collapse . choices . length . fst . question
 
 
 
