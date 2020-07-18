@@ -68,12 +68,31 @@ prune :: Matrix Choices -> Matrix Choices
 prune = pruneBy rows . pruneBy cols
         where pruneBy f = f . map reduce . f
 
+{-
 reduce :: Row Choices -> Row Choices 
 reduce xss = [xs `minus` singles | xs <- xss]
         where singles = concat (filter single xss)
+-}
+
+--sets parts of Row Choices as single if theyre greater than the number
+reduce :: Row Choices -> Int -> Row Choices
+reduce xss = foldl (\(acc, num) x -> if (
+
+--sums up the current single squares in a row
+sumSingle :: Row Choices -> Int
+sumSinge r = foldl (\(acc, num) x -> if (single x) && (head x) then (acc + num, num + 1) else (acc, num + 1)) (0,1) r
+
+--sums up single squares and unknowns.
+sumUnkowns :: Row Choices -> Int
+sumUnknowns = foldl(\(acc,num) x -> if (not (single x)) || (head x) then (acc + num, num + 1) else (acc, num + 1) (0,1) 
+--if the unknowns sum to the number exactly then it has to be true
+setTrue :: Row Choices -> Int -> Row Choices
+setTrue r = if (sumSingle)
 
 minus :: Choices -> Choices -> Choices
 xs `minus` ys = if single xs then xs else xs \\ ys
+
+impos :: Choices -> Choices
 
 single :: [a] -> Bool
 single [_] = True
@@ -86,10 +105,47 @@ fix f x = if x == x' then x else fix f x'
 solveFixPrune :: Question -> [Grid]
 solveFixPrune q= filter (valid q) (collapse (fix prune (choices (length (fst q)))))
 
---turns out that its not that good
+--turns out that its not that good - it doesnt do anything!
+--we need to take out anything that 
 --lets keep optimizing
-
+{-
 solve :: Question -> [Grid]
 solve = search prune choices . length . fst 
 
 search :: Matrix Choices -> [Grid]
+search m
+    | blocked m = []
+    | complete m = collapse m
+    | otherwise = [g | m' <- guesses m
+                     , g <- search (prune m')]
+
+
+guesses :: Matrix Choices -> [Matrix Choices]
+guesses m = 
+    [rows1 ++ [row1 ++ [c] : row2] ++ rows2 | c<- cs]
+    where
+        (rows1, row : row2) = break (any (not . single)) m --breaks up the rows into 3 parts
+        (row1, cs : row2) = break (not . single) row -- breaks up the row into 3 parts
+    
+--this is a 'complete square'
+complete :: Matrix Choices -> Bool
+complete = all (all single)
+
+-- 'impossible solution' might not be complete
+blocked :: Matrix Choices -> Bool
+blocked m = void m || not (safe m)
+
+--checks if anylists are empty null == true on []
+void :: Matrix Choices -> Bool
+void = any (any null)
+
+--check that we are not going over the sums
+safe :: Matrix Choices -> Question -> Bool
+safe cm q = all consistent (rows cm) (fst q) &&
+            all consistent (cols cm) (fst q)
+
+--if the ones we know about are 
+consistent :: Row Choices -> [b] -> Bool
+
+-}
+
