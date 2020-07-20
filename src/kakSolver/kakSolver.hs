@@ -66,7 +66,10 @@ solveBrute question= filter (valid  question) (collapse (choices (length (fst qu
 --now we want to prune the search tree a little
 prune :: Matrix Choices -> Matrix Choices
 prune = pruneBy rows . pruneBy cols
-        where pruneBy f = f . map reduce . f
+--prune x = pruneBy rows (pruneBy cols x)
+        --where pruneBy f = f . map reduce . f
+        --where pruneBy f x = f (map reduce (f x)
+        where pruneBy f x = f (map (reduce (sumSingle 1)) (f x))
 
 {-
 reduce :: Row Choices -> Row Choices 
@@ -75,24 +78,25 @@ reduce xss = [xs `minus` singles | xs <- xss]
 -}
 
 --sets parts of Row Choices as single if theyre greater than the number
-reduce :: Row Choices -> Int -> Row Choices
-reduce xss = foldl (\(acc, num) x -> if (
+reduce :: Int -> Row Choices -> Row Choices
+reduce num  xss = [if i > num then [False] else [True,False] | (i,s) <- zip [1..] xss]
 
 --sums up the current single squares in a row
 sumSingle :: Row Choices -> Int
-sumSinge r = foldl (\(acc, num) x -> if (single x) && (head x) then (acc + num, num + 1) else (acc, num + 1)) (0,1) r
+sumSingle r = fst (foldl (\(acc, num) x -> if (single x) && (head x) then (acc + num, num + 1) else (acc, num + 1)) (0,1) r)
 
 --sums up single squares and unknowns.
-sumUnkowns :: Row Choices -> Int
-sumUnknowns = foldl(\(acc,num) x -> if (not (single x)) || (head x) then (acc + num, num + 1) else (acc, num + 1) (0,1) 
+--sumUnknowns :: Row Choices -> Int
+--sumUnknowns = foldl(\(acc,num) x -> if (not (single x)) || (head x) then (acc + num, num + 1) else (acc, num + 1)) (0,1) 
+
 --if the unknowns sum to the number exactly then it has to be true
-setTrue :: Row Choices -> Int -> Row Choices
-setTrue r = if (sumSingle)
+--setTrue :: Row Choices -> Int -> Row Choices
+--setTrue r = if (sumSingle)
 
 minus :: Choices -> Choices -> Choices
 xs `minus` ys = if single xs then xs else xs \\ ys
 
-impos :: Choices -> Choices
+--impos :: Choices -> Choices
 
 single :: [a] -> Bool
 single [_] = True
