@@ -67,7 +67,7 @@ solveBrute question= filter (valid  question) (collapse (choices (length (fst qu
 
 --now we want to prune the search tree a little
 prune :: Question -> Matrix Choices -> Matrix Choices
-prune q m = pruneBy rows( pruneBy cols m (fst q)) (snd q)
+prune q m = pruneBy rows( pruneBy cols m (snd q)) (fst q)
 --prune x = pruneBy rows (pruneBy cols x)
         --where pruneBy f = f . map reduce . f
         --where pruneBy f x = f (map reduce (f x)
@@ -81,7 +81,8 @@ reduce xss = [xs `minus` singles | xs <- xss]
 
 --sets parts of Row Choices as single if theyre greater than the number
 reduce ::  (Row Choices, Int) -> Row Choices
-reduce (xss,num) = [if i > (num - sumSingle xss) then [False] else [True,False] | (i,s) <- zip [1..] xss]
+--reduce (xss,num) = [if i > (num - sumSingle xss) then [False] else [True,False] | (i,s) <- zip [1..] xss]
+reduce (xss,num) = [if i > num || (single s) then [False] else [True,False] | (i,s) <- zip [1..] xss]
 
 --sums up the current single squares in a row
 sumSingle :: Row Choices -> Int
