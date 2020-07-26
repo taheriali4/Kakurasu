@@ -14,8 +14,11 @@ values = [True, False]
 --puzzle = [[True,False],
          -- [False,True]]
 
+q1 :: Question
+q1 = ([1,2],[1,2])
+
 puzzle :: Question
-puzzle = ([14,10,10,10,77],[6,8,13,12,6])
+puzzle = ([14,10,10,10,7],[6,8,13,12,6])
 
 valid :: Question -> Grid-> Bool
 valid (q1, q2) g = (sumcheck (rows g) q1) && (sumcheck (cols g) q2)
@@ -82,7 +85,14 @@ reduce xss = [xs `minus` singles | xs <- xss]
 --sets parts of Row Choices as single if theyre greater than the number
 reduce ::  (Row Choices, Int) -> Row Choices
 --reduce (xss,num) = [if i > (num - sumSingle xss) then [False] else [True,False] | (i,s) <- zip [1..] xss]
-reduce (xss,num) = [if i > num || (single s) then [False] else [True,False] | (i,s) <- zip [1..] xss]
+reduce (xss,num) = [help i num xss s | (i,s) <- zip [1..] xss]
+
+help :: Int -> Int -> Row Choices -> Choices ->  Choices
+help i num xss [s] = [s]
+help i num xss s = if i > (num - sumSingle xss) then [False] else [True,False]
+
+--if sumUnkowns xss == num then all non singles are True
+--potentially nice prune
 
 --sums up the current single squares in a row
 sumSingle :: Row Choices -> Int
@@ -116,7 +126,7 @@ solveFixPrune q= filter (valid q) (collapse (fix (prune q) (choices (length (fst
 --we need to take out anything that 
 --lets keep optimizing
 solve :: Question -> [Grid]
-solve q = search q (fix (prune q) (choices (length  (fst  q))))
+solve q =  search q (fix (prune q) (choices (length  (fst  q))))
 
 search :: Question -> Matrix Choices -> [Grid]
 search q m
@@ -142,8 +152,10 @@ blocked :: Matrix Choices -> Question -> Bool
 blocked m q = void m || not (safe m q)
 
 --checks if anylists are empty null == true on []
+--not ever true so we should instead check if a row or col cant sum up anymore
 void :: Matrix Choices -> Bool
 void = any (any null)
+
 
 --check that we are not going over the sums
 safe :: Matrix Choices -> Question -> Bool
@@ -152,7 +164,7 @@ safe cm q = all consistent (zip (rows cm) (fst q)) &&
 
 --if the ones we know about are 
 consistent :: (Row Choices, Int) -> Bool
-consistent (r, q) = (sumSingle r) < q
+consistent (r, q) = (sumSingle r) <= q && (sumUnknowns r) >= q
 --want to add up all the singles and then prove that theyre less than the sum
 
 
