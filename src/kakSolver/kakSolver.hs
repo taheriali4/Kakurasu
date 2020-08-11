@@ -18,7 +18,7 @@ q1 :: Question
 q1 = ([1,2],[1,2])
 
 puzzle :: Question
-puzzle = ([14,10,10,10,7],[6,8,13,12,6])
+puzzle = ([46,77,77,67,48,76,68,71,59,46,13,46],[73,56,58,68,39,66,49,56,66,41,44,52])
 
 valid :: Question -> Grid-> Bool
 valid (q1, q2) g = (sumcheck (rows g) q1) && (sumcheck (cols g) q2)
@@ -122,11 +122,11 @@ fix f x = if x == x' then x else fix f x'
 solveFixPrune :: Question -> [Grid]
 solveFixPrune q= filter (valid q) (collapse (fix (prune q) (choices (length (fst q)))))
 
---turns out that its not that good - it doesnt do anything!
+--turns out that its not that good 
 --we need to take out anything that 
 --lets keep optimizing
 solve :: Question -> [Grid]
-solve q =  search q (fix (prune q) (choices (length  (fst  q))))
+solve q =  search q (prune q (choices (length  (fst  q))))
 
 search :: Question -> Matrix Choices -> [Grid]
 search q m
@@ -169,4 +169,7 @@ consistent (r, q) = (sumSingle r) <= q && (sumUnknowns r) >= q
 
 
 main :: IO ()
-main = putStrLn $ show (head  (solve puzzle))
+main = putStrLn (unlines (map show (map (map (\x -> if x then 1 else 0) ) p)))
+    where
+    p = head (solve puzzle)
+--main = putStrLn (show (solve puzzle))
