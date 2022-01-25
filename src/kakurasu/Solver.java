@@ -19,4 +19,25 @@ public class Solver {
 		return null;
 	}
 
+	public static ArrayList<Long> calcNumOfCombo(int total, int eachBox) {
+		ArrayList<Long> combinations = new ArrayList<>(0);
+		String min="1";
+		String max="9";
+		for(int i=0; i< (eachBox-1); i++)
+		{
+		 	min +="0";
+		 	max +="9";
+		}
+		
+		long minCombo = Long.parseLong(min);
+		long maxCombo = Long.parseLong(max);
+		for(long j= minimum; j <= maxCombo; j++)
+		{
+			if(isUnique(j) && (sumOfDigits(j) == total) && (!new Long(j).toString().contains("0"))){
+				combinations.add(j);
+			}
+		}
+		return combinations;
+	}
+	
 }
